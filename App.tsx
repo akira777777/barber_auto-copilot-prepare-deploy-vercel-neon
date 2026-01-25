@@ -168,6 +168,7 @@ const App: React.FC = () => {
             src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=2070"
             alt="Barber Shop Interior"
             className="w-full h-full object-cover brightness-[0.35] scale-105"
+            fetchpriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
         </div>
@@ -304,6 +305,8 @@ const App: React.FC = () => {
                 <img
                   src={src}
                   alt={`Work ${idx + 1}`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-4">
@@ -403,6 +406,8 @@ const App: React.FC = () => {
                   <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0 p-8"
                   />
                   <div className="absolute top-4 left-4 bg-[#c5a059] text-black text-[9px] font-black px-3 py-1.5 uppercase tracking-widest oswald rotate-[-5deg]">
