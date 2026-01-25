@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { SERVICES, BARBERS } from '../constants';
 import { X, CheckCircle } from 'lucide-react';
-import { createBooking } from '../services/api';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -11,8 +10,6 @@ interface BookingModalProps {
 
 const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     serviceId: '',
     barberId: '',
@@ -26,19 +23,6 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
 
   const handleNext = () => setStep(step + 1);
   const handlePrev = () => setStep(step - 1);
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    setError(null);
-    try {
-      await createBooking(formData);
-      setStep(5);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const steps = [
     { title: 'Select Service', id: 1 },
@@ -70,12 +54,12 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
       case 2:
         return (
           <div className="grid grid-cols-1 gap-3">
-            <button
-              onClick={() => { setFormData({ ...formData, barberId: 'any' }); handleNext(); }}
-              className="p-4 border border-white/10 text-center hover:border-[#c5a059] transition-all font-bold uppercase oswald tracking-widest text-sm"
-            >
-              Any Free Master
-            </button>
+             <button
+                onClick={() => { setFormData({ ...formData, barberId: 'any' }); handleNext(); }}
+                className="p-4 border border-white/10 text-center hover:border-[#c5a059] transition-all font-bold uppercase oswald tracking-widest text-sm"
+              >
+                Any Free Master
+              </button>
             {BARBERS.map((b) => (
               <button
                 key={b.id}
@@ -91,73 +75,47 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
             ))}
           </div>
         );
-      case 3: {
-        const today = new Date().toISOString().split('T')[0];
-        const maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 3);
-        const maxDateStr = maxDate.toISOString().split('T')[0];
-
+      case 3:
         return (
           <div className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="booking-date" className="block text-xs text-gray-400 uppercase tracking-wider oswald">Select Date</label>
-              <input
-                id="booking-date"
-                type="date"
-                min={today}
-                max={maxDateStr}
-                value={formData.date}
-                className="w-full bg-black border border-white/20 p-4 text-white focus:outline-none focus:border-[#c5a059] uppercase oswald [color-scheme:dark]"
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <h3 className="block text-xs text-gray-400 uppercase tracking-wider oswald">Available Times</h3>
-              <div className="grid grid-cols-4 gap-2">
-                {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'].map(t => (
-                  <button
-                    key={t}
-                    onClick={() => { setFormData({ ...formData, time: t }); handleNext(); }}
-                    disabled={!formData.date}
-                    className={`p-2 text-sm border font-bold oswald transition-all ${
-                      !formData.date
-                        ? 'border-white/5 text-gray-700 cursor-not-allowed'
-                        : formData.time === t
-                          ? 'bg-[#c5a059] text-black border-[#c5a059]'
-                          : 'border-white/10 hover:border-white/40'
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
+            <input 
+              type="date" 
+              className="w-full bg-black border border-white/20 p-4 text-white focus:outline-none focus:border-[#c5a059] uppercase oswald"
+              onChange={(e) => setFormData({...formData, date: e.target.value})}
+            />
+            <div className="grid grid-cols-4 gap-2">
+              {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'].map(t => (
+                <button
+                  key={t}
+                  onClick={() => { setFormData({...formData, time: t}); handleNext(); }}
+                  className={`p-2 text-sm border font-bold oswald ${formData.time === t ? 'bg-[#c5a059] text-black border-[#c5a059]' : 'border-white/10 hover:border-white/40'}`}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
           </div>
         );
-      }
       case 4:
         return (
           <div className="space-y-4">
-            <input
-              type="text"
+            <input 
+              type="text" 
               placeholder="Your Name"
               className="w-full bg-black border border-white/20 p-4 text-white uppercase oswald"
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
             />
-            <input
-              type="tel"
+            <input 
+              type="tel" 
               placeholder="+420 ___ ___ ___"
               className="w-full bg-black border border-white/20 p-4 text-white oswald"
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
             />
-            {error && <p className="text-red-500 text-xs oswald uppercase">{error}</p>}
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full bg-[#c5a059] text-black font-bold p-4 uppercase oswald tracking-widest mt-4 hover:bg-white transition-all disabled:opacity-50"
+            <button 
+              onClick={() => setStep(5)}
+              className="w-full bg-[#c5a059] text-black font-bold p-4 uppercase oswald tracking-widest mt-4 hover:bg-white transition-all"
             >
-              {isSubmitting ? 'Confirming...' : 'Confirm Booking'}
+              Confirm Booking
             </button>
           </div>
         );
@@ -167,7 +125,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
             <CheckCircle className="mx-auto text-[#c5a059] w-16 h-16" />
             <h3 className="text-2xl font-bold uppercase oswald">You're Booked!</h3>
             <p className="text-gray-400">We've sent a confirmation via Telegram/SMS. See you soon in Prague!</p>
-            <button
+            <button 
               onClick={onClose}
               className="mt-6 border border-[#c5a059] text-[#c5a059] px-8 py-2 uppercase oswald tracking-widest hover:bg-[#c5a059] hover:text-black transition-all"
             >
@@ -182,17 +140,17 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="button" tabIndex={-1} />
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-zinc-900 border-2 border-zinc-800 w-full max-w-lg overflow-hidden shadow-2xl">
         <div className="flex justify-between items-center p-6 border-b border-zinc-800 bg-black/40">
           <h2 className="text-xl font-bold oswald uppercase tracking-widest text-[#c5a059]">
             {step < 5 ? steps.find(s => s.id === step)?.title : 'Success'}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors" aria-label="Close booking modal">
+          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
             <X size={24} />
           </button>
         </div>
-
+        
         <div className="p-6 max-h-[70vh] overflow-y-auto">
           {renderStep()}
         </div>
@@ -201,7 +159,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
           <div className="p-6 border-t border-zinc-800 flex justify-between items-center bg-black/40">
             <button onClick={handlePrev} className="text-zinc-500 hover:text-white text-[10px] uppercase font-black tracking-widest transition-colors">Back</button>
             <div className="flex space-x-2">
-              {[1, 2, 3, 4].map(i => (
+              {[1,2,3,4].map(i => (
                 <div key={i} className={`h-1.5 w-6 ${step >= i ? 'bg-[#c5a059]' : 'bg-zinc-800'}`} />
               ))}
             </div>

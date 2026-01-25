@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Iron & Steel Barbershop",
+  "description": "A premium, brutalist-style barbershop web application featuring online booking, master profiles, service catalogs, and an AI-powered style assistant.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

@@ -25,14 +25,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemove,
   onCheckout 
 }) => {
-  // Calculate pricing with discounts
   const subtotal = items.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-  const totalDiscount = items.reduce((acc, item) => {
-    const discount = item.product.discount || 0;
-    const itemDiscount = (item.product.price * discount / 100) * item.quantity;
-    return acc + itemDiscount;
-  }, 0);
-  const total = subtotal - totalDiscount;
 
   if (!isOpen) return null;
 
@@ -83,29 +76,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
                             <div>
                               <div className="flex justify-between text-base font-bold oswald uppercase text-white">
                                 <h3 className="line-clamp-1 pr-2">{item.product.name}</h3>
-                                <div className="text-right shrink-0">
-                                  {item.product.discount ? (
-                                    <>
-                                      <p className="text-[#c5a059]">
-                                        {Math.round(item.product.price * (1 - item.product.discount / 100) * item.quantity)} Kč
-                                      </p>
-                                      <p className="text-xs text-gray-600 line-through">
-                                        {item.product.price * item.quantity} Kč
-                                      </p>
-                                    </>
-                                  ) : (
-                                    <p className="text-[#c5a059]">{item.product.price * item.quantity} Kč</p>
-                                  )}
-                                </div>
+                                <p className="text-[#c5a059] shrink-0">{item.product.price * item.quantity} Kč</p>
                               </div>
-                              <div className="mt-1 flex items-center gap-2">
-                                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-black">{item.product.brand}</p>
-                                {item.product.discount && (
-                                  <span className="text-[9px] bg-red-600 text-white px-2 py-0.5 font-black uppercase tracking-wider">
-                                    -{item.product.discount}%
-                                  </span>
-                                )}
-                              </div>
+                              <p className="mt-1 text-[10px] text-zinc-500 uppercase tracking-widest font-black">{item.product.brand}</p>
                             </div>
                             
                             <div className="flex-1 flex items-end justify-between text-sm mt-4">
@@ -185,26 +158,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
 
             {items.length > 0 && (
               <div className="border-t-2 border-zinc-800 py-8 px-4 sm:px-6 bg-black">
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-sm font-black oswald uppercase text-zinc-500">
-                    <p className="tracking-[0.2em] text-[11px]">Subtotal</p>
-                    <p className="text-white">{subtotal} Kč</p>
-                  </div>
-                  {totalDiscount > 0 && (
-                    <div className="flex justify-between text-sm font-black oswald uppercase text-green-500">
-                      <p className="tracking-[0.2em] text-[11px]">Discount</p>
-                      <p>-{Math.round(totalDiscount)} Kč</p>
-                    </div>
-                  )}
-                  <div className="border-t border-zinc-800 pt-3 flex justify-between text-base font-black oswald uppercase text-white">
-                    <p className="tracking-[0.2em] text-[11px] text-zinc-500">Total</p>
-                    <p className="text-2xl text-[#c5a059]">{Math.round(total)} Kč</p>
-                  </div>
-                  {totalDiscount > 0 && (
-                    <p className="text-[9px] text-green-500 uppercase font-black tracking-[0.2em] oswald text-right">
-                      You save {Math.round(totalDiscount)} Kč!
-                    </p>
-                  )}
+                <div className="flex justify-between text-base font-black oswald uppercase text-white mb-6">
+                  <p className="tracking-[0.2em] text-zinc-500 text-[11px]">Subtotal</p>
+                  <p className="text-2xl text-[#c5a059]">{subtotal} Kč</p>
                 </div>
                 <div className="mt-6">
                   <button

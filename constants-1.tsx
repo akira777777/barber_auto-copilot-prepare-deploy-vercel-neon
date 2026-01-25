@@ -41,11 +41,11 @@ export const BARBERS: Barber[] = [
 ];
 
 export const PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Sandalwood Oil', brand: 'Iron & Steel', price: 350, image: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80&w=300', category: 'beard' },
+  { id: 'p1', name: 'Sandalwood Oil', brand: 'Iron & Steel', price: 350, image: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80&w=300', category: 'beard', discount: 15 },
   { id: 'p2', name: 'Matte Clay', brand: 'Reuzel', price: 480, image: 'https://images.unsplash.com/photo-1554519934-e32b8b64f72f?auto=format&fit=crop&q=80&w=300', category: 'hair' },
-  { id: 'p3', name: 'Daily Shampoo', brand: 'Uppercut', price: 420, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&q=80&w=300', category: 'care' },
+  { id: 'p3', name: 'Daily Shampoo', brand: 'Uppercut', price: 420, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&q=80&w=300', category: 'care', discount: 10 },
   { id: 'p4', name: 'Sea Salt Spray', brand: 'Morgan\'s', price: 550, image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&q=80&w=300', category: 'hair' },
-  { id: 'p5', name: 'Beard Balm', brand: 'Proraso', price: 380, image: 'https://images.unsplash.com/photo-1594411133065-f483b156942c?auto=format&fit=crop&q=80&w=300', category: 'beard' },
+  { id: 'p5', name: 'Beard Balm', brand: 'Proraso', price: 380, image: 'https://images.unsplash.com/photo-1594411133065-f483b156942c?auto=format&fit=crop&q=80&w=300', category: 'beard', discount: 20 },
   { id: 'p6', name: 'Aftershave Lotion', brand: 'Clubman', price: 290, image: 'https://images.unsplash.com/photo-1626285861696-9f0bf5a49c6d?auto=format&fit=crop&q=80&w=300', category: 'care' },
 ];
 

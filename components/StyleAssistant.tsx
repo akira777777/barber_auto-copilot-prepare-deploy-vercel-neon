@@ -1,7 +1,9 @@
+
 import React, { useState, useRef } from 'react';
+import { getStyleAdvice } from '../services/gemini';
 import { PRODUCTS } from '../constants';
 import { Product } from '../types';
-import { Sparkles, Camera, Loader2, Send, ShoppingBag, Plus, Check, X } from 'lucide-react';
+import { Sparkles, Camera, Loader2, Send, ShoppingBag, Plus, Check, X, Video, FileVideo } from 'lucide-react';
 
 interface StyleAssistantProps {
   onAddToCart?: (product: Product) => void;
@@ -13,28 +15,34 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [media, setMedia] = useState<{ data: string, mimeType: string, type: 'image' | 'video' } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64 = (reader.result as string).split(',')[1];
-        setImageBase64(base64);
+        setMedia({
+          data: base64,
+          mimeType: file.type,
+          type: type
+        });
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleAnalyze = async () => {
-    if (!description && !imageBase64) return;
+    if (!description && !media) return;
     setLoading(true);
     try {
-      // Lazy load Gemini service only when needed
-      const { getStyleAdvice } = await import('../services/gemini');
-      const advice = await getStyleAdvice(description, imageBase64 || undefined);
+      const advice = await getStyleAdvice(
+        description, 
+        media ? { mimeType: media.mimeType, data: media.data } : undefined
+      );
       setResult(advice);
     } catch (err) {
       console.error(err);
@@ -64,16 +72,16 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
           <Sparkles size={20} />
           <h3 className="font-bold oswald uppercase tracking-wider">AI Style Advisor</h3>
         </div>
-        <button onClick={() => setIsOpen(false)} className="text-black hover:opacity-50 transition-all" aria-label="Close AI Style Advisor">
+        <button onClick={() => setIsOpen(false)} className="text-black hover:opacity-50 transition-all">
           <X size={20} />
         </button>
       </div>
 
-      <div className="p-6 space-y-4 overflow-y-auto">
+      <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar">
         {!result ? (
           <>
             <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">
-              Describe your style goals or upload a photo. Our AI will analyze your features and suggest the perfect cut and products from our Prague collection.
+              Describe your style goals or upload a photo/video. A 360° video gives the best analysis of head shape and growth patterns.
             </p>
             <div className="space-y-4">
               <textarea
@@ -82,30 +90,52 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
                 placeholder="Ex: I want a sharp fade, I have a square face, beard grows unevenly..."
                 className="w-full bg-black border-2 border-zinc-800 p-4 text-sm focus:border-[#c5a059] outline-none h-28 text-white resize-none oswald uppercase tracking-widest placeholder:text-zinc-800"
               />
-              <div className="flex items-center space-x-3">
+              
+              <div className="flex space-x-3">
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 flex items-center justify-center space-x-2 bg-zinc-950 border-2 border-zinc-800 py-3 hover:bg-zinc-900 hover:border-[#c5a059] transition-all text-white font-black uppercase oswald text-xs tracking-widest"
+                  className="flex-1 flex flex-col items-center justify-center space-y-1 bg-zinc-950 border-2 border-zinc-800 py-3 hover:bg-zinc-900 hover:border-[#c5a059] transition-all text-white font-black uppercase oswald text-[10px] tracking-widest"
                 >
-                  <Camera size={16} />
-                  <span>Upload Photo</span>
+                  <Camera size={18} />
+                  <span>Photo</span>
+                </button>
+                <button 
+                  onClick={() => videoInputRef.current?.click()}
+                  className="flex-1 flex flex-col items-center justify-center space-y-1 bg-zinc-950 border-2 border-zinc-800 py-3 hover:bg-zinc-900 hover:border-[#c5a059] transition-all text-white font-black uppercase oswald text-[10px] tracking-widest"
+                >
+                  <Video size={18} />
+                  <span>Video</span>
                 </button>
                 <input 
                   type="file" 
                   ref={fileInputRef} 
                   className="hidden" 
                   accept="image/*" 
-                  onChange={handleImageUpload}
-                  aria-label="Upload photo for style analysis"
+                  onChange={(e) => handleFileUpload(e, 'image')}
+                />
+                <input 
+                  type="file" 
+                  ref={videoInputRef} 
+                  className="hidden" 
+                  accept="video/*" 
+                  onChange={(e) => handleFileUpload(e, 'video')}
                 />
               </div>
-              {imageBase64 && (
-                <div className="p-2 border-2 border-[#c5a059] bg-[#c5a059]/5 text-center text-[10px] text-[#c5a059] uppercase font-black tracking-widest animate-pulse">
-                  IMAGE READY
+
+              {media && (
+                <div className="p-3 border-2 border-[#c5a059] bg-[#c5a059]/5 flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
+                  <div className="flex items-center space-x-3">
+                    {media.type === 'video' ? <FileVideo className="text-[#c5a059]" size={20} /> : <Camera className="text-[#c5a059]" size={20} />}
+                    <span className="text-[10px] text-[#c5a059] uppercase font-black tracking-widest">
+                      {media.type === 'video' ? 'Video Attached' : 'Image Attached'}
+                    </span>
+                  </div>
+                  <button onClick={() => setMedia(null)} className="text-[#c5a059] hover:text-white"><X size={14} /></button>
                 </div>
               )}
+
               <button
-                disabled={loading || (!description && !imageBase64)}
+                disabled={loading || (!description && !media)}
                 onClick={handleAnalyze}
                 className="w-full bg-black border-2 border-[#c5a059] text-[#c5a059] font-black py-4 flex items-center justify-center space-x-3 hover:bg-[#c5a059] hover:text-black disabled:opacity-50 transition-all oswald uppercase tracking-[0.2em]"
               >
@@ -137,10 +167,10 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
                       if (!product) return null;
                       const isAdded = addedItems[product.id];
                       return (
-                        <div key={rec.productId} className="bg-zinc-950 border-2 border-zinc-800 p-4 group hover:border-[#c5a059] transition-all">
+                        <div key={idx} className="bg-zinc-950 border-2 border-zinc-800 p-4 group hover:border-[#c5a059] transition-all">
                           <div className="flex items-center space-x-4 mb-3">
                             <div className="w-16 h-16 bg-zinc-900 overflow-hidden shrink-0 border-2 border-zinc-800 group-hover:border-[#c5a059] transition-colors">
-                              <img src={product.image} loading="lazy" decoding="async" className="w-full h-full object-cover grayscale group-hover:grayscale-0" alt={product.name} />
+                                <img src={product.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0" alt={product.name} />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-[9px] text-[#c5a059] font-black uppercase tracking-widest leading-none mb-1">{product.brand}</p>
@@ -172,7 +202,7 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
                 <h4 className="text-[#c5a059] text-[10px] font-black uppercase oswald tracking-widest">Expert Care Tips</h4>
                 <div className="space-y-2">
                   {result.careTips?.map((tip: string, idx: number) => (
-                    <div key={tip} className="flex items-start space-x-3 text-[10px] text-zinc-500 bg-black p-3 border border-zinc-800 uppercase font-bold tracking-widest leading-normal">
+                    <div key={idx} className="flex items-start space-x-3 text-[10px] text-zinc-500 bg-black p-3 border border-zinc-800 uppercase font-bold tracking-widest leading-normal">
                       <span className="text-[#c5a059] shrink-0 font-black">/</span>
                       <span>{tip}</span>
                     </div>
@@ -182,7 +212,7 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
             </div>
             
             <button 
-              onClick={() => {setResult(null); setDescription(''); setImageBase64(null);}}
+              onClick={() => {setResult(null); setDescription(''); setMedia(null);}}
               className="w-full bg-zinc-950 border-2 border-zinc-800 py-4 text-[11px] font-black uppercase oswald tracking-[0.3em] hover:bg-zinc-900 hover:border-white transition-all text-white mt-6"
             >
               Start New Analysis
@@ -190,6 +220,12 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
           </div>
         )}
       </div>
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #222; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #c5a059; }
+      `}</style>
     </div>
   );
 };

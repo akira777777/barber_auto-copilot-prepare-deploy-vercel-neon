@@ -2,50 +2,47 @@
 import { GoogleGenAI } from "@google/genai";
 import { PRODUCTS } from "../constants";
 
-let genAIInstance: GoogleGenAI | null = null;
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-function getGenAI(): GoogleGenAI {
-  if (!genAIInstance) {
-    genAIInstance = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  }
-  return genAIInstance!;
-}
-
-export async function getStyleAdvice(description: string, imageBase64?: string) {
-  const ai = getGenAI();
+export async function getStyleAdvice(description: string, media?: { mimeType: string, data: string }) {
   const model = 'gemini-3-pro-preview';
   
   const availableProducts = PRODUCTS.map(p => `ID: ${p.id}, Name: ${p.name}, Brand: ${p.brand}, Category: ${p.category}`).join('; ');
 
+  const mediaType = media?.mimeType.startsWith('video') ? 'video' : 'photo';
   const prompt = `You are a professional master barber and stylist with 20 years of experience at "Iron & Steel" in Prague.
-  Analyze the client's description (and photo, if provided) and give specific style recommendations for their haircut and beard.
-  Description: ${description}.
+  Analyze the client's description${media ? ` and the provided ${mediaType}` : ''} to give specific style recommendations for their haircut and beard.
+  
+  User Description: ${description}.
 
   Here is our current stock of professional products: ${availableProducts}.
   
-  Your task is not just to suggest a haircut, but to select the PERFECT care and styling routine from our range to help the client recreate this look at home in the Czech capital.
+  Your task:
+  1. Analyze face shape, hair texture, and growth patterns from the ${mediaType} (if provided).
+  2. Suggest a specific haircut and beard style.
+  3. Select the PERFECT care and styling routine from our range to help the client recreate this look at home.
   
   Respond STRICTLY in JSON format:
   {
     "haircutRecommendation": "Haircut Name",
     "beardRecommendation": "Beard Advice",
-    "reasoning": "In-depth analysis: why this style suits the face shape, hair structure, and description provided.",
+    "reasoning": "In-depth analysis: why this style suits the face shape and hair structure observed in the ${mediaType}.",
     "careTips": ["Pro styling tip", "Skin/hair care advice", "Maintenance hack"],
     "productRecommendations": [
        { 
          "productId": "ID of the product from the list above", 
-         "reason": "Specific reason: e.g., 'This matte clay will perfectly hold the texture of your new Crop' or 'This oil will soften the coarse stubble of your beard'." 
+         "reason": "Specific reason: e.g., 'This matte clay will perfectly hold the texture of your new Crop'." 
        }
     ]
   }
   
   The response must be valid JSON in English. Pick exactly 2 most suitable products.`;
 
-  const contents = imageBase64 
+  const contents = media 
     ? {
         parts: [
           { text: prompt },
-          { inlineData: { mimeType: 'image/jpeg', data: imageBase64 } }
+          { inlineData: { mimeType: media.mimeType, data: media.data } }
         ]
       }
     : { parts: [{ text: prompt }] };
@@ -68,7 +65,6 @@ export async function getStyleAdvice(description: string, imageBase64?: string) 
 }
 
 export async function analyzeVideoContent(videoBase64: string, mimeType: string, prompt: string) {
-  const ai = getGenAI();
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
@@ -87,7 +83,6 @@ export async function analyzeVideoContent(videoBase64: string, mimeType: string,
 }
 
 export async function generateAiVideo(prompt: string, onProgress?: (msg: string) => void) {
-  const ai = getGenAI();
   try {
     onProgress?.("Initializing Veo generation engine...");
     let operation = await ai.models.generateVideos({

@@ -25,7 +25,7 @@ export interface Product {
   price: number;
   image: string;
   category: string;
-  discount?: number;
+  discount?: number; // Optional discount percentage (0-100)
 }
 
 export interface Testimonial {

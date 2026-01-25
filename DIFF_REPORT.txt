@@ -1,4 +1,4 @@
-﻿DIFF REPORT: 01/25/2026 04:31:28
+DIFF REPORT: 01/25/2026 04:31:28
 ONLY IN DST: .github\agents\my-agent.agent.md
 ONLY IN DST: .github\copilot-instructions.md
 ONLY IN DST: .vscode\launch.json
