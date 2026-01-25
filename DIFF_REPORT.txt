@@ -1,0 +1,50 @@
+﻿DIFF REPORT: 01/25/2026 04:31:28
+ONLY IN DST: .github\agents\my-agent.agent.md
+ONLY IN DST: .github\copilot-instructions.md
+ONLY IN DST: .vscode\launch.json
+DIFFERS: App.tsx
+ONLY IN DST: backend\config\database.js
+ONLY IN DST: backend\controllers\authController.js
+ONLY IN DST: backend\controllers\barberController.js
+ONLY IN DST: backend\controllers\bookingController.js
+ONLY IN DST: backend\controllers\productController.js
+ONLY IN DST: backend\controllers\serviceController.js
+ONLY IN DST: backend\index.js
+ONLY IN DST: backend\models\Barber.js
+ONLY IN DST: backend\models\Booking.js
+ONLY IN DST: backend\models\Product.js
+ONLY IN DST: backend\models\Service.js
+ONLY IN DST: backend\models\User.js
+ONLY IN DST: backend\package.json
+ONLY IN DST: backend\package-lock.json
+ONLY IN DST: backend\routes\authRoutes.js
+ONLY IN DST: backend\routes\barberRoutes.js
+ONLY IN DST: backend\routes\bookingRoutes.js
+ONLY IN DST: backend\routes\productRoutes.js
+ONLY IN DST: backend\routes\serviceRoutes.js
+ONLY IN DST: backend\seed.js
+DIFFERS: components\BookingModal.tsx
+DIFFERS: components\CartDrawer.tsx
+ONLY IN DST: components\LoginModal.tsx
+DIFFERS: components\StyleAssistant.tsx
+ONLY IN DST: CONFLICT_REPORT.md
+DIFFERS: constants.tsx
+ONLY IN DST: DEPLOYMENT_READY.md
+ONLY IN DST: DEPLOYMENT_STATUS.md
+ONLY IN DST: DEVELOPER_GUIDE.md
+ONLY IN DST: FIXES_COMPLETED.md
+ONLY IN DST: index.css
+DIFFERS: index.html
+DIFFERS: index.tsx
+ONLY IN SRC: metadata.json
+DIFFERS: package.json
+ONLY IN DST: package-lock.json
+ONLY IN DST: postcss.config.js
+ONLY IN DST: PRODUCTION_READY.md
+DIFFERS: README.md
+ONLY IN DST: services\api.ts
+DIFFERS: services\gemini.ts
+ONLY IN DST: tailwind.config.js
+DIFFERS: types.ts
+DIFFERS: vite.config.ts
+ONLY IN DST: vite-env.d.ts

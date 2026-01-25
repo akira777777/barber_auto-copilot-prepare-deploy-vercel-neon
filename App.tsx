@@ -178,7 +178,7 @@ const App: React.FC = () => {
             <span className="w-10 h-[1px] bg-[#c5a059]/30"></span>
           </h2>
           <h1 className="text-6xl md:text-[10rem] font-black oswald leading-[0.85] mb-10 tracking-tighter uppercase">
-            CRAFTED <br /> BY <span className="text-transparent text-stroke-gold">STEEL</span>
+            CRAFTED <br /> BY <span className="text-transparent" style={{ WebkitTextStroke: '2px #c5a059' }}>STEEL</span>
           </h1>
           <p className="text-zinc-400 text-lg md:text-2xl max-w-2xl mx-auto mb-14 font-medium uppercase oswald tracking-widest leading-relaxed">
             Premium grooming for those who define the standards. Uncompromising quality in the heart of the Czech capital.
@@ -405,15 +405,9 @@ const App: React.FC = () => {
                     alt={product.name}
                     className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0 p-8"
                   />
-                  {product.discount ? (
-                    <div className="absolute top-4 left-4 bg-red-600 text-white text-[9px] font-black px-3 py-1.5 uppercase tracking-widest oswald rotate-[-5deg]">
-                      -{product.discount}% OFF
-                    </div>
-                  ) : (
-                    <div className="absolute top-4 left-4 bg-[#c5a059] text-black text-[9px] font-black px-3 py-1.5 uppercase tracking-widest oswald rotate-[-5deg]">
-                      In Stock
-                    </div>
-                  )}
+                  <div className="absolute top-4 left-4 bg-[#c5a059] text-black text-[9px] font-black px-3 py-1.5 uppercase tracking-widest oswald rotate-[-5deg]">
+                    In Stock
+                  </div>
                 </div>
 
                 <div className="p-6 flex-grow flex flex-col border-t border-zinc-900 bg-[#050505]">
@@ -433,8 +427,8 @@ const App: React.FC = () => {
                         return (
                           <button
                             key={star}
-                            onClick={handleStarClick}
-                            onMouseEnter={handleStarHover}
+                            onClick={() => handleSetRating(product.id, star)}
+                            onMouseEnter={() => setHoveredStars(prev => ({ ...prev, [product.id]: star }))}
                             className="transition-transform hover:scale-125 focus:outline-none"
                           >
                             <Star
@@ -450,20 +444,7 @@ const App: React.FC = () => {
                   </div>
 
                   <div className="mt-auto pt-6 flex items-center justify-between border-t border-zinc-900">
-                    <div className="flex flex-col">
-                      {product.discount ? (
-                        <>
-                          <span className="text-3xl font-black oswald text-[#c5a059]">
-                            {Math.round(product.price * (1 - product.discount / 100))} Kč
-                          </span>
-                          <span className="text-sm font-black oswald text-zinc-700 line-through">
-                            {product.price} Kč
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-3xl font-black oswald text-white">{product.price} Kč</span>
-                      )}
-                    </div>
+                    <span className="text-3xl font-black oswald text-white">{product.price} Kč</span>
                     <button
                       onClick={() => handleAddToCart(product)}
                       className={`w-12 h-12 flex items-center justify-center transition-all border-2 ${addedItems[product.id]
