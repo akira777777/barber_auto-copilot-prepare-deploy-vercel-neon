@@ -167,6 +167,7 @@ const App: React.FC = () => {
           <img
             src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=2070"
             alt="Barber Shop Interior"
+            fetchPriority="high"
             className="w-full h-full object-cover brightness-[0.35] scale-105"
             fetchpriority="high"
           />
@@ -210,7 +211,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-32 bg-[#080808] relative border-y border-white/5">
+      <section id="services" className="py-32 bg-[#080808] relative border-y border-white/5 overflow-hidden">
         <div className="absolute left-0 top-0 text-[10vw] font-black oswald text-zinc-900/10 -translate-x-1/4 -translate-y-1/4 pointer-events-none select-none uppercase">Service</div>
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -362,6 +363,7 @@ const App: React.FC = () => {
             <img
               src={galleryImages[activeGalleryImage]}
               alt="Enlarged Work"
+              loading="lazy"
               className="w-full h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500 border border-white/10"
             />
             <div className="absolute bottom-10 left-10 right-10 flex justify-between items-end">
@@ -505,106 +507,38 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative group aspect-square">
-              <div className="absolute -inset-4 border-2 border-zinc-900 group-hover:border-[#c5a059]/30 transition-all duration-1000 pointer-events-none"></div>
-              <div className="w-full h-full bg-zinc-950 border-2 border-zinc-800 overflow-hidden relative">
-                <img
-                  src="https://picsum.photos/seed/prague-map/1200/1200"
-                  alt="Prague Location"
-                  className="w-full h-full object-cover opacity-40 grayscale contrast-125 scale-110 group-hover:scale-100 transition-all duration-[20s] linear infinite"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-[#c5a059] rounded-full animate-ping opacity-20"></div>
-                    <div className="w-16 h-16 bg-[#c5a059] border-4 border-black text-black flex items-center justify-center shadow-2xl relative z-10">
-                      <MapPin size={28} />
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute bottom-8 left-8 right-8 bg-black/80 backdrop-blur-md p-6 border border-white/5 translate-y-12 group-hover:translate-y-0 transition-transform duration-700">
-                  <p className="text-sm font-black uppercase oswald tracking-widest mb-2">Iron & Steel Prague 1</p>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-4">Historic District • Complimentary Parking for Clients</p>
-                  <button className="w-full py-3 bg-[#c5a059] text-black font-black uppercase oswald tracking-widest text-xs">Open in Navigation</button>
-                </div>
-              </div>
+            <div className="relative h-[400px] md:h-[600px] rounded-xl overflow-hidden border-2 border-zinc-900 group">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2558.4563476897!2d14.4192!3d50.0756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b939ea53ee8bd%3A0xb7e6a1c1e0b0c0e0!2sVod%C3%AD%C4%8dkova%2036%2C%20110%2000%20Prague%201!5e0!3m2!1sen!2scz!4v1234567890"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black py-20 border-t border-white/5 relative">
-        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-16 mb-20">
-          <div className="md:col-span-2">
-            <span className="text-4xl font-black tracking-tighter oswald flex items-center text-white mb-8">
-              IRON <span className="text-[#c5a059] mx-2">&</span> STEEL
-            </span>
-            <p className="text-zinc-500 text-sm max-w-sm font-bold uppercase oswald tracking-widest leading-relaxed">
-              Premium grooming sanctuary for the modern man. Crafting perfection in Prague since 2014. Join the elite.
-            </p>
-          </div>
-          <div>
-            <h5 className="text-[#c5a059] font-black uppercase tracking-[0.4em] oswald text-xs mb-8">Navigation</h5>
-            <ul className="space-y-4">
-              {['Services', 'Barbers', 'Gallery', 'Shop', 'Contacts'].map(item => (
-                <li key={item}><button onClick={() => scrollToSection(item.toLowerCase())} className="text-zinc-400 hover:text-white transition-colors uppercase font-black oswald tracking-widest text-xs">{item}</button></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h5 className="text-[#c5a059] font-black uppercase tracking-[0.4em] oswald text-xs mb-8">Company</h5>
-            <ul className="space-y-4">
-              {['About Us', 'Privacy Policy', 'Terms of Service', 'Career', 'Gift Cards'].map(item => (
-                <li key={item}><button type="button" onClick={() => {}} className="text-zinc-400 hover:text-white transition-colors uppercase font-black oswald tracking-widest text-xs text-left">{item}</button></li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      {/* Modal & Drawer Components */}
+      {isBookingOpen && <BookingModal onClose={() => setIsBookingOpen(false)} />}
+      {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} onLoginSuccess={() => setIsAdmin(true)} />}
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveFromCart} onCheckout={handleCheckout} />}
 
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-10 border-t border-zinc-900 pt-12">
-          <div className="flex gap-10">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-zinc-700 hover:text-white transition-colors"><Instagram size={20} /></a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:text-white transition-colors text-xs font-black uppercase oswald tracking-widest">Twitter</a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:text-white transition-colors text-xs font-black uppercase oswald tracking-widest">Facebook</a>
-          </div>
-          <div className="flex items-center gap-6">
-            <p className="text-zinc-800 text-[10px] font-black uppercase oswald tracking-widest">© 2024 IRON & STEEL PRAGUE. ALL RIGHTS RESERVED.</p>
-            <button
-              onClick={() => setIsLoginOpen(true)}
-              className="text-zinc-800 hover:text-[#c5a059] text-[9px] uppercase tracking-[0.4em] font-black transition-all p-2 border border-zinc-900 rounded-sm"
-            >
-              STAFF LOGIN
-            </button>
-          </div>
-        </div>
-      </footer>
-
-      {/* Scroll to Top */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        type="button"
-        aria-label="Scroll to top"
-        className={`fixed bottom-8 left-8 z-[50] w-14 h-14 bg-zinc-900 border-2 border-zinc-800 text-[#c5a059] flex items-center justify-center transition-all ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'} hover:bg-[#c5a059] hover:text-black`}
-      >
-        <ArrowUp size={24} strokeWidth={3} />
-      </button>
-
-      {/* Overlays */}
-      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cart}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemove={handleRemoveFromCart}
-        onCheckout={handleCheckout}
-      />
       <StyleAssistant onAddToCart={handleAddToCart} addedItems={addedItems} />
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onLoginSuccess={() => setIsAdmin(true)}
-      />
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-32 right-8 z-40 w-12 h-12 bg-[#c5a059] text-black flex items-center justify-center hover:scale-110 transition-transform"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp size={20} strokeWidth={3} />
+        </button>
+      )}
     </div>
   );
 };
