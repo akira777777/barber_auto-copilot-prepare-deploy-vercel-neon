@@ -1,6 +1,4 @@
-
 import React, { useState, useRef } from 'react';
-import { getStyleAdvice } from '../services/gemini';
 import { PRODUCTS } from '../constants';
 import { Product } from '../types';
 import { Sparkles, Camera, Loader2, Send, ShoppingBag, Plus, Check, X } from 'lucide-react';
@@ -34,6 +32,8 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
     if (!description && !imageBase64) return;
     setLoading(true);
     try {
+      // Lazy load Gemini service only when needed
+      const { getStyleAdvice } = await import('../services/gemini');
       const advice = await getStyleAdvice(description, imageBase64 || undefined);
       setResult(advice);
     } catch (err) {
@@ -140,7 +140,7 @@ const StyleAssistant: React.FC<StyleAssistantProps> = ({ onAddToCart, addedItems
                         <div key={rec.productId} className="bg-zinc-950 border-2 border-zinc-800 p-4 group hover:border-[#c5a059] transition-all">
                           <div className="flex items-center space-x-4 mb-3">
                             <div className="w-16 h-16 bg-zinc-900 overflow-hidden shrink-0 border-2 border-zinc-800 group-hover:border-[#c5a059] transition-colors">
-                                <img src={product.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0" alt={product.name} />
+                                <img src={product.image} loading="lazy" className="w-full h-full object-cover grayscale group-hover:grayscale-0" alt={product.name} />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-[9px] text-[#c5a059] font-black uppercase tracking-widest leading-none mb-1">{product.brand}</p>
