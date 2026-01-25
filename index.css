@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* App-wide tweaks can live here if needed. */
+
+.text-stroke-gold {
+	-webkit-text-stroke: 2px #c5a059;
+}
+
+.text-stroke-zinc {
+	-webkit-text-stroke: 2px #222;
+}

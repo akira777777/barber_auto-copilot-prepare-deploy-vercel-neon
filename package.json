@@ -1,0 +1,44 @@
+{
+  "name": "iron-&-steel-barbershop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:db": "docker compose up -d db",
+    "dev:backend": "wait-on tcp:127.0.0.1:5433 && npm --prefix backend run dev",
+    "dev:full": "npm run dev:db && concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev\"",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down --remove-orphans",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.38.0",
+    "lucide-react": "^0.563.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.17.2",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.0.10",
+    "@vitejs/plugin-react": "^5.1.2",
+    "autoprefixer": "^10.4.23",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "wait-on": "^8.0.5"
+  }
+}
