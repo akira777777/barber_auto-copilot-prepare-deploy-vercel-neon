@@ -35,6 +35,12 @@ const Booking = sequelize.define('Booking', {
         type: DataTypes.ENUM('pending', 'confirmed', 'cancelled', 'completed'),
         defaultValue: 'pending',
     },
+}, {
+    indexes: [
+        {
+            fields: ['date', 'time', 'barber_id'],
+        },
+    ],
 });
 
 export default Booking;
