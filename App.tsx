@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Navbar from './components/Navbar';
 import BookingModal from './components/BookingModal';
 import StyleAssistant from './components/StyleAssistant';
@@ -12,6 +13,7 @@ import {
   Maximize2, X, ChevronLeft, ChevronRight, ArrowUp
 } from 'lucide-react';
 import { Product } from './types';
+import { throttle } from './utils';
 
 interface CartItem {
   product: Product;
@@ -31,7 +33,7 @@ const App: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setShowScrollTop(window.scrollY > 800);
+    const handleScroll = throttle(() => setShowScrollTop(window.scrollY > 800), 200);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -531,6 +533,7 @@ const App: React.FC = () => {
         onCheckout={handleCheckout}
       />
       <StyleAssistant onAddToCart={handleAddToCart} addedItems={addedItems} />
+      <SpeedInsights />
     </div>
   );
 };
