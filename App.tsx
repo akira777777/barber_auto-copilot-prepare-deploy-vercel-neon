@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Navbar from './components/Navbar';
 import BookingModal from './components/BookingModal';
 import StyleAssistant from './components/StyleAssistant';
@@ -531,6 +532,7 @@ const App: React.FC = () => {
         onCheckout={handleCheckout}
       />
       <StyleAssistant onAddToCart={handleAddToCart} addedItems={addedItems} />
+      <SpeedInsights />
     </div>
   );
 };
