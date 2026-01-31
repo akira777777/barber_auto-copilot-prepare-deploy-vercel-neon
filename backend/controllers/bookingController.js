@@ -28,6 +28,24 @@ export const createBooking = async (req, res) => {
 
 export const getAllBookings = async (req, res) => {
     try {
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+
+        if (!isNaN(page) && !isNaN(limit) && page > 0 && limit > 0) {
+            const offset = (page - 1) * limit;
+            const { count, rows } = await Booking.findAndCountAll({
+                order: [['date', 'DESC'], ['time', 'ASC']],
+                limit,
+                offset
+            });
+            return res.json({
+                bookings: rows,
+                total: count,
+                page,
+                totalPages: Math.ceil(count / limit)
+            });
+        }
+
         const bookings = await Booking.findAll({
             order: [['date', 'DESC'], ['time', 'ASC']]
         });
